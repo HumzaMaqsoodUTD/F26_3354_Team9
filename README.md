@@ -16,11 +16,11 @@ assign beds and equipment to patients, and update resource statuses in real time
 - History log tracking all status changes and assignments
 
 ## Team Members
--
--
--
--
--
--
--
+- H Maqsood         -> @HumzaMaqsoodUTD 
+- S Patil
+- M Amanullah       -> @88muaaz88-cloud 
+- S Pineda          -> @Pinedas654
+- Noman
+- A Nguyen
+- S Bislig
 
