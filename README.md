@@ -1,3 +1,3 @@
 # F26_3354_Team9
-Project repo for Team 9 in CS 3354
-Team 9 - Occupan
+Project repo for Team 9 - Occupan in CS 3354
+
