@@ -1,0 +1,200 @@
+<!doctype html>
+<!-- Presentation layer: browser UI. [Part B - teammate] -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Occupan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Logo mark, defined once and reused -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="logo" viewBox="0 0 32 32">
+      <rect width="32" height="32" rx="9" fill="currentColor"/>
+      <g fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-glyph">
+        <path d="M8 9.5v13"/><path d="M8 20h16.5v2.5"/><path d="M8 20v-3.5a2 2 0 0 1 2-2h5.5a3 3 0 0 1 3 3V20"/>
+      </g>
+    </symbol>
+  </svg>
+
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand-lockup">
+        <svg class="logo-mark" aria-hidden="true" focusable="false"><use href="#logo"/></svg>
+        <span class="brand-name">Occupan</span>
+      </div>
+      <div id="userbox" hidden>
+        <span id="whoami"></span>
+        <button id="logout" class="ghost small">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Login (FR-1) -->
+  <section id="login-view">
+    <div class="login-brand">
+      <div class="login-brand-inner">
+        <div class="brand-lockup">
+          <svg class="logo-mark" aria-hidden="true" focusable="false"><use href="#logo"/></svg>
+          <span class="brand-name">Occupan</span>
+        </div>
+        <p class="tagline">See which beds, rooms and equipment are free, at a glance.</p>
+        <ul class="features">
+          <li class="feature"><span class="feature-icon f-pulse" aria-hidden="true"></span>Live status at a glance</li>
+          <li class="feature"><span class="feature-icon f-swap" aria-hidden="true"></span>Assign and release in a few clicks</li>
+          <li class="feature"><span class="feature-icon f-chart" aria-hidden="true"></span>History and utilization reports</li>
+        </ul>
+      </div>
+    </div>
+    <div class="login-main">
+      <div class="card narrow login-card">
+        <h2>Sign in</h2>
+        <p class="muted">Use your staff account to continue.</p>
+        <form id="login-form">
+          <label>Username <input name="username" autocomplete="username" required></label>
+          <label>Password <input name="password" type="password" autocomplete="current-password" required></label>
+          <button type="submit">Sign in</button>
+          <p id="login-error" class="error" role="alert"></p>
+        </form>
+        <p class="muted login-note">Demo data only.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dashboard (FR-2, FR-7) -->
+  <main class="container">
+    <section id="app-view" hidden>
+      <div class="row-between page-head">
+        <div>
+          <h2 class="page-title">Dashboard</h2>
+          <p class="muted">Live status of beds, rooms and equipment.</p>
+        </div>
+        <div class="page-actions">
+          <button id="add-resource" hidden>Add resource</button>
+          <button id="show-report" class="ghost">Utilization report</button>
+        </div>
+      </div>
+
+      <div id="notice" class="notice" role="status" hidden></div>
+
+      <div id="summary" class="summary" role="group" aria-label="Resources by status"></div>
+
+      <form id="filters" class="card filters" aria-label="Filter resources">
+        <label>Search <input name="q" placeholder="ID, location, patient ID, need"></label>
+        <label>Type
+          <select name="type"><option value="">All</option><option>Bed</option><option>Room</option><option>Equipment</option></select>
+        </label>
+        <label>Status
+          <select name="status">
+            <option value="">All</option><option>Available</option><option>Occupied</option><option>Reserved</option>
+            <option>Cleaning</option><option>Maintenance</option><option>Unavailable</option>
+          </select>
+        </label>
+        <label>Location <input name="location" placeholder="e.g. Ward A"></label>
+        <label>Sort by
+          <select name="sort"><option value="resource_id">ID</option><option value="type">Type</option><option value="location">Location</option><option value="status">Status</option></select>
+        </label>
+        <label>Order <select name="order"><option value="asc">Ascending</option><option value="desc">Descending</option></select></label>
+        <button type="button" id="clear-filters" class="ghost">Clear</button>
+      </form>
+
+      <section aria-labelledby="resources-heading">
+        <div class="row-between table-head">
+          <h2 id="resources-heading">Resources</h2>
+          <p class="muted"><span id="count"></span></p>
+        </div>
+        <div class="table-wrap">
+          <table class="resources-table">
+            <thead><tr><th scope="col">ID</th><th scope="col">Type</th><th scope="col">Location</th><th scope="col">Status</th><th scope="col">Assigned to</th><th scope="col">Actions</th></tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+        <div id="empty" class="empty" hidden>
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="21" cy="21" r="12"/><path d="M30 30l11 11"/><path d="M16 21h10"/>
+          </svg>
+          <p>No resources match these filters.</p>
+          <p class="muted">Try changing or clearing the filters.</p>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <footer>
+    <p>Occupan is a resource-management aid. It does not provide medical diagnosis, treatment, or patient-care recommendations. Demo data only; patient identifiers are simulated.</p>
+  </footer>
+
+  <!-- Dialogs -->
+  <dialog id="dlg-assign" aria-labelledby="assign-heading">
+    <form method="dialog" id="assign-form">
+      <h3 id="assign-heading">Assign <span id="assign-title"></span></h3>
+      <label class="radio"><input type="radio" name="kind" value="patient" checked> Simulated patient ID</label>
+      <label class="radio"><input type="radio" name="kind" value="need"> Operational need</label>
+      <input name="value" placeholder="SIM-12345" aria-label="Patient ID or operational need" required>
+      <p class="error" id="assign-error" role="alert"></p>
+      <div class="actions"><button value="cancel" class="ghost" formnovalidate>Cancel</button><button value="ok">Assign</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-release" aria-labelledby="release-heading">
+    <form method="dialog" id="release-form">
+      <h3 id="release-heading">Release <span id="release-title"></span></h3>
+      <label>Next status
+        <select name="next"><option>Available</option><option>Cleaning</option><option>Reserved</option><option>Maintenance</option><option>Unavailable</option></select>
+      </label>
+      <p class="error" id="release-error" role="alert"></p>
+      <div class="actions"><button value="cancel" class="ghost" formnovalidate>Cancel</button><button value="ok">Release</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-status" aria-labelledby="status-heading">
+    <form method="dialog" id="status-form">
+      <h3 id="status-heading">Change status <span id="status-title"></span></h3>
+      <label>New status
+        <select name="status"><option>Available</option><option>Reserved</option><option>Cleaning</option><option>Maintenance</option><option>Unavailable</option></select>
+      </label>
+      <p class="error" id="status-error" role="alert"></p>
+      <div class="actions"><button value="cancel" class="ghost" formnovalidate>Cancel</button><button value="ok">Save</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-add" aria-labelledby="add-heading">
+    <form method="dialog" id="add-form">
+      <h3 id="add-heading">Add resource</h3>
+      <label>ID <input name="resource_id" placeholder="BED-106" required></label>
+      <label>Type <select name="type"><option>Bed</option><option>Room</option><option>Equipment</option></select></label>
+      <label>Location <input name="location" required></label>
+      <p class="error" id="add-error" role="alert"></p>
+      <div class="actions"><button value="cancel" class="ghost" formnovalidate>Cancel</button><button value="ok">Add</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-edit" aria-labelledby="edit-heading">
+    <form method="dialog" id="edit-form">
+      <h3 id="edit-heading">Edit <span id="edit-title"></span></h3>
+      <label>Location <input name="location" required></label>
+      <p class="error" id="edit-error" role="alert"></p>
+      <div class="actions"><button value="cancel" class="ghost" formnovalidate>Cancel</button><button value="ok">Save</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-history" class="wide" aria-labelledby="history-heading">
+    <h3 id="history-heading">History <span id="history-title"></span></h3>
+    <div id="history-body"></div>
+    <div class="actions"><button id="close-history" class="ghost">Close</button></div>
+  </dialog>
+
+  <dialog id="dlg-report" class="wide" aria-labelledby="report-heading">
+    <h3 id="report-heading">Utilization report</h3>
+    <div id="report-body"></div>
+    <div class="actions"><button id="close-report" class="ghost">Close</button></div>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
